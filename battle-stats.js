@@ -24,7 +24,7 @@ async function getAllTokens () {
   const data = await fetch(TZKTQUERY + TOKEN_META)
     .then((response) => response.json())
     .then((data) => data.filter((elm, i) => {
-      return i < min
+      return i > min && i < min + 10 
     }))
 
   data
