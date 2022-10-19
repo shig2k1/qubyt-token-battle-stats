@@ -1,0 +1,22 @@
+{
+  "name": "qubyt-token-battle-stats",
+  "version": "1.0.0",
+  "description": "An app to collect battle-stats from Qubyt's FXHash Spaceship NFT",
+  "main": "battle-stats.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shig2k1/qubyt-token-battle-stats.git"
+  },
+  "author": "Sh!g",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shig2k1/qubyt-token-battle-stats/issues"
+  },
+  "homepage": "https://github.com/shig2k1/qubyt-token-battle-stats#readme",
+  "dependencies": {
+    "table": "^6.8.0"
+  }
+}
