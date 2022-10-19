@@ -45,6 +45,7 @@ async function getAllTokens () {
             features
             owner {
               id
+              name
             }
           }
         }
