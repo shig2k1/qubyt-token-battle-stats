@@ -51,18 +51,8 @@ async function getAllTokens () {
 
   let tableOutput = table(tableData)
   console.log(tableOutput)
-  
-  let fileData = `<!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8"/>
-    </head>
-    <body style="white-space:pre; font-family:monospace">
-    ${tableOutput}
-    </body>
-    </html>`
-  
-  fs.writeFile(`battles/batch-${batch}.html`, fileData, function(err) {
+
+  fs.writeFile(`battles/batch-${batch}.txt`, tableOutput, function(err) {
     if(err) {
       return console.log(err)
     }
