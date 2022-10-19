@@ -29,24 +29,62 @@ if (!fs.existsSync('battles')){
 async function getAllTokens () {
   const min = batch * 10
   console.log('fetching all data: ', TZKTQUERY + TOKEN_META)
-  const data = await fetch(TZKTQUERY + TOKEN_META)
+  /*const data = await fetch(TZKTQUERY + TOKEN_META)
     .then((response) => response.json())
     .then((data) => data.filter((elm, i) => {
       return i > min && i < min + 10 
-    }))
+    }))*/
+    let response
+    
+    await fetch('https://api.fxhash.xyz/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query ExampleQuery($generativeTokenId: Float) {
+          generativeToken(id: $generativeTokenId) {
+            id
+            metadata
+            objkts {
+              id
+              features
+              owner {
+                name
+                id
+              }
+              minter {
+                name
+                id
+              }
+            }
+          }
+        }`,
+        variables: {
+          generativeTokenId: 18303
+        }
+      })
+    })
+      .then(r => r.json())
+      .then((data) => response = data.data.generativeToken.objkts.filter((elm, i) => {
+        return i > min && i < min + 10 
+      }) )
+
 
   const tableData = [
-    ['Address', 'Alias', QUERY_ROW]
+    ['Address', 'Alias', 'ID', QUERY_ROW]
   ]
 
-  data
+  response
     .sort((a, b) => {
-      const s1 = parseInt(a.metadata.attributes.find(n => n.name == QUERY_ROW).value)
-      const s2 = parseInt(b.metadata.attributes.find(n => n.name == QUERY_ROW).value)
+      const s1 = a.features.find(n => n.name == QUERY_ROW).value
+      const s2 = b.features.find(n => n.name == QUERY_ROW).value
       return s1 > s2 ? -1 : 1
     })
     .forEach(row => {
-      tableData.push([row.firstMinter.address, row.firstMinter.alias ?? '-', row.metadata.attributes.find(n => n.name == QUERY_ROW).value])
+      console.log(JSON.stringify(row))
+      tableData.push([row.owner.id, row.owner.name ?? '-', row.id, row.features.find(n => n.name == QUERY_ROW).value])
     })
 
   let tableOutput = table(tableData)
