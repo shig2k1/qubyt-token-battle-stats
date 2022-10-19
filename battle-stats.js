@@ -2,8 +2,6 @@ const fetch = require('node-fetch')
 const table = require('table').table
 const fs = require('fs')
 
-const TZKTQUERY = 'https://api.tzkt.io/v1/tokens?contract.address.eq=KT1BJC12dG17CVvPKJ1VYaNnaT5mzfnUTwXv&metadata.name.as='
-const TOKEN_META = 'Lonely%20Shapes*'
 const QUERY_ROW = 'Pallet Number'
 
 function getArg (args, argname) {
@@ -28,49 +26,42 @@ if (!fs.existsSync('battles')){
 
 async function getAllTokens () {
   const min = batch * 10
-  console.log('fetching all data: ', TZKTQUERY + TOKEN_META)
-  /*const data = await fetch(TZKTQUERY + TOKEN_META)
-    .then((response) => response.json())
-    .then((data) => data.filter((elm, i) => {
-      return i > min && i < min + 10 
-    }))*/
-    let response
-    
-    await fetch('https://api.fxhash.xyz/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `query ExampleQuery($filters: GenerativeTokenFilter) {
-          generativeTokens(filters: $filters) {
+  let response
+  
+  await fetch('https://api.fxhash.xyz/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `query ExampleQuery($filters: GenerativeTokenFilter) {
+        generativeTokens(filters: $filters) {
+          id
+          metadata
+          entireCollection {
             id
-            metadata
-            entireCollection {
+            name
+            features
+            owner {
               id
-              name
-              features
-              owner {
-                id
-              }
             }
           }
-        }`,
-        variables: {
-          "filters": {
-            "id_in": 18303
-          }
-        },
-      })
+        }
+      }`,
+      variables: {
+        "filters": {
+          "id_in": 18303
+        }
+      },
     })
-      .then(r => r.json())
-      .then((data) => {
-        console.log(data.data.generativeTokens[0].entireCollection)
-        response = data.data.generativeTokens[0].entireCollection.filter((elm, i) => {
-          return i > min && i < min + 10 
-        }) 
-      })
+  })
+    .then(r => r.json())
+    .then((data) => {
+      response = data.data.generativeTokens[0].entireCollection.filter((elm, i) => {
+        return i > min && i < min + 10 
+      }) 
+    })
 
 
   const tableData = [
