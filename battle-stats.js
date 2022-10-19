@@ -43,33 +43,34 @@ async function getAllTokens () {
         'Accept': 'application/json',
       },
       body: JSON.stringify({
-        query: `query ExampleQuery($generativeTokenId: Float) {
-          generativeToken(id: $generativeTokenId) {
+        query: `query ExampleQuery($filters: GenerativeTokenFilter) {
+          generativeTokens(filters: $filters) {
             id
             metadata
-            objkts {
+            entireCollection {
               id
+              name
               features
               owner {
-                name
-                id
-              }
-              minter {
-                name
                 id
               }
             }
           }
         }`,
         variables: {
-          generativeTokenId: 18303
-        }
+          "filters": {
+            "id_in": 18303
+          }
+        },
       })
     })
       .then(r => r.json())
-      .then((data) => response = data.data.generativeToken.objkts.filter((elm, i) => {
-        return i > min && i < min + 10 
-      }) )
+      .then((data) => {
+        console.log(data.data.generativeTokens[0].entireCollection)
+        response = data.data.generativeTokens[0].entireCollection.filter((elm, i) => {
+          return i > min && i < min + 10 
+        }) 
+      })
 
 
   const tableData = [
